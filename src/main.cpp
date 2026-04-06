@@ -25,7 +25,7 @@ int main ()
 	World world;
 
 
-	world.bodies.reserve(1000);
+	world.bodies.reserve(10000);
 
 // Tell the window to use vsync and work on high DPI displays
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
@@ -60,13 +60,19 @@ int main ()
 
 			body.restitution = 0.5f +(Random::GetRandomFloat() * 0.5f );
 
+			body.gravityScale = 0.0f;
+
+			body.damping = 0.5f;
+
 			world.AddBody(body); 
 		}
 		//update
 
 		//gravity update???
-		for (auto& body : world.bodies) body.acceleration = Vector2{ 0,0 };
-		for (auto& body : world.bodies) body.AddForce(world.gravity * 100.0f);
+		//reset acceleration (world) update
+		for (auto& body : world.bodies) body.acceleration = world.gravity * 100.0f * body.gravityScale;// Vector2{ 0,0 };
+
+		//for (auto& body : world.bodies) body.AddForce(world.gravity * 100.0f);
 
 
 		if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
@@ -109,11 +115,10 @@ int main ()
 			}
 		}
 
-		// drawing
+		// drawing (add to world.draw)
 		BeginDrawing();
-		for ( auto& body : world.bodies)
+		for ( auto& body : world.bodies) //draw in WORLD
 		{
-			
 			body.DrawCircle(body.position, body.size, PURPLE);
 		}
 

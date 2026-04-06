@@ -8,10 +8,12 @@ class Physbody {
 public:
 	Vector2 position;
 	Vector2 velocity;
-	float mass;
 	Vector2 acceleration;
-	float size;
-	float restitution;
+	float mass = 1.0f;;
+	float size = 1.0f;
+	float restitution = 1.0f;
+	float gravityScale = 1.0f;
+	float damping = 0.0f;
 
 
 	

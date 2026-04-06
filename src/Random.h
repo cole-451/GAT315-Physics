@@ -7,8 +7,9 @@ public:
 	inline static float GetRandomFloat(float max = 10000) {
 		return GetRandomValue(0, max) / (float)max;
 	}
+	
 	inline static float GetRandomFloat(float min, float max = 10000) {
-		return GetRandomValue(min, max) / (float)max;
+		return min + GetRandomFloat() * (max - min);
 	}
 
 };

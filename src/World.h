@@ -16,6 +16,11 @@ public:
 
 	 std::vector<Physbody> bodies;
 
+	 void Step(float dt);
+	 void Draw();
+
+	 void UpdateCollision();
+
 	 void AddBody(Physbody& body);
 
 

@@ -19,13 +19,14 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "PhysBody.h"
 
 #include <vector>
+#include <string>
 
 int main ()
 {
 	World world;
 
 
-	world.bodies.reserve(10000);
+	world.bodies.reserve(1000000);
 
 // Tell the window to use vsync and work on high DPI displays
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
@@ -38,6 +39,12 @@ int main ()
 
 	// Load a texture from the resources directory
 	Texture wabbit = LoadTexture("wabbit_alpha.png");
+
+	//SetTargetFPS(60);
+
+	float timeAccumulator = 0.0f;
+
+	float fixedTimeStep = 1.0f / 60.0f;
 	
 	// game loop
 	while (!WindowShouldClose())		// run the loop until the user presses ESCAPE or presses the Close button on the window
@@ -66,53 +73,13 @@ int main ()
 
 			world.AddBody(body); 
 		}
-		//update
+		//update ( all this shit goes in world's update, or Step)
 
-		//gravity update???
-		//reset acceleration (world) update
-		for (auto& body : world.bodies) body.acceleration = world.gravity * 100.0f * body.gravityScale;// Vector2{ 0,0 };
+		timeAccumulator += dt;
 
-		//for (auto& body : world.bodies) body.AddForce(world.gravity * 100.0f);
-
-
-		if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-			Vector2 pos = GetMousePosition();
-			for (auto& body : world.bodies) {
-				Vector2 direction = pos - body.position;
-				if (Vector2Length(direction) <= 100.0f) {
-					Vector2 force = Vector2Normalize(direction) * -10000.0f;
-					body.AddForce( force);
-				}
-			}
-
-			DrawCircleLinesV(pos, 100, WHITE);
-		}
-
-		for (auto& body : world.bodies) world.SemiImplicitEuler(body, dt); // add to world update
-
-		
-		//barrier check: perhaps add to World
-		for (auto& body : world.bodies)
-		{
-			//integration
-			world.SemiImplicitEuler(body, dt);
-			
-			if (body.position.x - body.size > GetScreenWidth()) {
-				body.position.x = GetScreenWidth() - body.size;
-				body.velocity.x *= -body.restitution;
-			}
-			if (body.position.x - body.size < 0) {
-				body.position.x = body.size;
-				body.velocity.x *= -body.restitution;
-			}
-			if (body.position.y - body.size > GetScreenHeight()) {
-				body.position.y = GetScreenHeight() - body.size;
-				body.velocity.y *= -body.restitution;
-			}
-			if (body.position.y - body.size < 0) {
-				body.position.y = body.size;
-				body.velocity.y *= body.restitution;
-			}
+		while (timeAccumulator > fixedTimeStep) {
+			world.Step(fixedTimeStep);
+			timeAccumulator -= fixedTimeStep;
 		}
 
 		// drawing (add to world.draw)
@@ -126,10 +93,11 @@ int main ()
 		ClearBackground(BLACK);
 
 		// draw some text using the default font
-		DrawText("Hello Raylib", 200,200,20,WHITE);
+		std::string fps_text = "FPS: ";
+		fps_text += std::to_string(GetFPS());
+		DrawText(fps_text.c_str(), 200, 200, 20, WHITE);
 
 		// draw our texture to the screen
-		DrawTexture(wabbit, 400, 200, WHITE);
 		
 		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
@@ -137,7 +105,6 @@ int main ()
 
 	// cleanup
 	// unload our texture so it can be cleaned up
-	UnloadTexture(wabbit);
 
 	// destroy the window and cleanup the OpenGL context
 	CloseWindow();

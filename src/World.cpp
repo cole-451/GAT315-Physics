@@ -14,13 +14,11 @@ void World::SemiImplicitEuler(Physbody& body, float dt) {
 
 void World::Step(float dt)
 {
-	//update
-
-		//gravity update???
+	//gravity update???
 		//reset acceleration (world) update
 	for (auto& body : bodies) body.acceleration = gravity * 100.0f * body.gravityScale;// Vector2{ 0,0 };
 
-	//for (auto& body : world.bodies) body.AddForce(world.gravity * 100.0f);
+	for (auto& body : bodies) body.AddForce(gravity * 100.0f);
 
 
 	if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {

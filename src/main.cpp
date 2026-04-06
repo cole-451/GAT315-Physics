@@ -60,7 +60,7 @@ int main ()
 
 			body.restitution = 0.5f +(Random::GetRandomFloat() * 0.5f );
 
-			world.AddBody(body); //can be AddBody in World
+			world.AddBody(body); 
 		}
 		//update
 

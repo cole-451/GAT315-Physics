@@ -20,24 +20,12 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 
 #include <vector>
 
-
-
-
-
-
-
-
-
-
-
-Vector2 gravity{ 0, 9.81f };
-
-
 int main ()
 {
+	World world;
 
 
-	World::bodies.reserve(1000);
+	world.bodies.reserve(1000);
 
 // Tell the window to use vsync and work on high DPI displays
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
@@ -72,18 +60,18 @@ int main ()
 
 			body.restitution = 0.5f +(Random::GetRandomFloat() * 0.5f );
 
-			World::bodies.push_back(body); //can be AddBody in World
+			world.AddBody(body); //can be AddBody in World
 		}
 		//update
 
 		//gravity update???
-		for (auto& body : World::bodies) body.acceleration = Vector2{ 0,0 };
-		for (auto& body : World::bodies) body.AddForce(gravity * 100.0f);
+		for (auto& body : world.bodies) body.acceleration = Vector2{ 0,0 };
+		for (auto& body : world.bodies) body.AddForce(world.gravity * 100.0f);
 
 
 		if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
 			Vector2 pos = GetMousePosition();
-			for (auto& body : World::bodies) {
+			for (auto& body : world.bodies) {
 				Vector2 direction = pos - body.position;
 				if (Vector2Length(direction) <= 100.0f) {
 					Vector2 force = Vector2Normalize(direction) * -10000.0f;
@@ -94,14 +82,14 @@ int main ()
 			DrawCircleLinesV(pos, 100, WHITE);
 		}
 
-		for (auto& body : World::bodies) World::SemiImplicitEuler(body, dt); // add to world update
+		for (auto& body : world.bodies) world.SemiImplicitEuler(body, dt); // add to world update
 
 		
 		//barrier check: perhaps add to World
-		for (auto& body : World::bodies)
+		for (auto& body : world.bodies)
 		{
 			//integration
-			World::SemiImplicitEuler(body, dt);
+			world.SemiImplicitEuler(body, dt);
 			
 			if (body.position.x - body.size > GetScreenWidth()) {
 				body.position.x = GetScreenWidth() - body.size;
@@ -123,7 +111,7 @@ int main ()
 
 		// drawing
 		BeginDrawing();
-		for ( auto& body : World::bodies)
+		for ( auto& body : world.bodies)
 		{
 			
 			body.DrawCircle(body.position, body.size, PURPLE);

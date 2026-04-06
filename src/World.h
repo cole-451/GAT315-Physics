@@ -5,16 +5,18 @@
 #include "raymath.h"
 #include <vector>
 
-static class World {
+ class World {
 public:
 
-	static void ExplicitEuler(Physbody& body, float dt);
+	 void ExplicitEuler(Physbody& body, float dt);
 
-	static void SemiImplicitEuler(Physbody& body, float dt);
+	 void SemiImplicitEuler(Physbody& body, float dt);
 
 	Vector2 gravity{ 0, 9.81f };
 
-	static std::vector<Physbody> bodies;
+	 std::vector<Physbody> bodies;
+
+	 void AddBody(Physbody& body);
 
 
 };

@@ -9,3 +9,7 @@ void World::SemiImplicitEuler(Physbody& body, float dt) {
 	body.velocity += body.acceleration * dt;
 	body.position += body.velocity * dt;
 }
+
+void World::AddBody(Physbody& body) {
+	bodies.push_back(body);
+}

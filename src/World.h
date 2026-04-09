@@ -3,6 +3,8 @@
 #include "PhysBody.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "Effector.h"
+#include "Collision.h"
 #include <vector>
 
  class World {
@@ -16,12 +18,17 @@ public:
 
 	 std::vector<Physbody> bodies;
 
+	 std::vector<class Effector*> effectors;
+
+	 std::vector<Contact> contacts;
+
 	 void Step(float dt);
 	 void Draw();
 
 	 void UpdateCollision();
 
 	 void AddBody(Physbody& body);
+	 void AddEffector(Effector* effector);
 
 
 };

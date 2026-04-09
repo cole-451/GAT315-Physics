@@ -33,6 +33,18 @@
     <ClInclude Include="src\Integrator.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="src\Effector.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PointEffector.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GravitationalEffector.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collision.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\icon.ico">
@@ -55,6 +67,15 @@
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="src\PhysBody.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PointEffector.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GravitationalEffector.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collision.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>

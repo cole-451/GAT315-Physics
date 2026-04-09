@@ -16,15 +16,15 @@ void World::Step(float dt)
 {
 	//gravity update???
 		//reset acceleration (world) update
-	for (auto& body : bodies) body.acceleration = gravity * 100.0f * body.gravityScale;// Vector2{ 0,0 };
+	for (auto& body : bodies) body.acceleration = Vector2{ 0,0 };// Vector2{ 0,0 };
+	for (auto& body : bodies) body.AddForce(gravity * 100.0f * body.gravityScale, ForceMode::Acceleration);// Vector2{ 0,0 };
 
-	for (auto& body : bodies) body.AddForce(gravity * 100.0f);
+	for (auto& effector : effectors) effector->Apply(bodies);
 
-
-	if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+	/*if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
 		Vector2 pos = GetMousePosition();
 		for (auto& body : bodies) {
-			Vector2 direction = pos - body.position;
+			Vector2 direction = body.position - pos;
 			if (Vector2Length(direction) <= 100.0f) {
 				Vector2 force = Vector2Normalize(direction) * -10000.0f;
 				body.AddForce(force);
@@ -32,17 +32,35 @@ void World::Step(float dt)
 		}
 
 		DrawCircleLinesV(pos, 100, WHITE);
+	}*/
+
+	// integration
+	for (auto& body : bodies) if(body.bodyType == BodyType::Dynamic) SemiImplicitEuler(body, dt); // add to world update
+
+	UpdateCollision();
+}
+
+void World::Draw()
+{
+	for (auto& body : bodies) //draw in WORLD
+	{
+		body.DrawCircle(body.position, body.size, PURPLE);
 	}
 
-	for (auto& body : bodies) SemiImplicitEuler(body, dt); // add to world update
+	for (auto& effector : effectors) {
+		effector->Draw();
+	}
+}
 
+void World::UpdateCollision()
+{
+	contacts.clear();
+	Contact::CreateContacts(bodies, contacts);
+	Contact::SeparateContacts(contacts);
 
 	//barrier check: perhaps add to World
 	for (auto& body : bodies)
 	{
-		//integration
-		SemiImplicitEuler(body, dt);
-
 		if (body.position.x - body.size > GetScreenWidth()) {
 			body.position.x = GetScreenWidth() - body.size;
 			body.velocity.x *= -body.restitution;
@@ -62,14 +80,11 @@ void World::Step(float dt)
 	}
 }
 
-void World::Draw()
-{
-	for (auto& body : bodies) //draw in WORLD
-	{
-		body.DrawCircle(body.position, body.size, PURPLE);
-	}
-}
-
 void World::AddBody(Physbody& body) {
 	bodies.push_back(body);
+}
+
+void World::AddEffector(Effector* effector)
+{
+	effectors.push_back(effector);
 }

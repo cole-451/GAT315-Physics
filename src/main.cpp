@@ -17,6 +17,8 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "World.h"
 #include "Random.h"
 #include "PhysBody.h"
+#include "PointEffector.h"
+#include "GravitationalEffector.h"
 
 #include <vector>
 #include <string>
@@ -24,6 +26,8 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 int main ()
 {
 	World world;
+	world.AddEffector(new PointEffector(Vector2{ 200,200, }, 2.0f, 1.0f));
+	world.AddEffector(new GravitationalEffector(10000.0f));
 
 
 	world.bodies.reserve(1000000);
@@ -53,6 +57,8 @@ int main ()
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || (IsKeyDown (KEY_LEFT_CONTROL) && IsMouseButtonDown(MOUSE_BUTTON_LEFT))) {
 			Physbody body; // all of this doesnt need to be moved.
 
+			body.bodyType = (IsKeyDown(KEY_LEFT_ALT) ? BodyType::Static : BodyType::Dynamic);
+
 			body.position = GetMousePosition();
 			body.size =5.0f +( Random::GetRandomFloat() * 20.0f);
 			float angle = Random::GetRandomFloat() * (2 *PI);
@@ -61,15 +67,19 @@ int main ()
 			direction.x = cosf(angle);
 			direction.y = sinf(angle);
 
-			body.velocity = direction * (Random::GetRandomFloat() * 300);
+			body.AddForce(direction * ( Random::GetRandomFloat() * 300), ForceMode::VelocityChange);
+
+			//body.velocity = direction * (Random::GetRandomFloat() * 300);
 			body.acceleration = Vector2{ 0,0 };
-			body.mass = 1.0f;
+			body.mass = body.size;
+
+			body.inverseMass = (body.bodyType == BodyType::Static)? 0 : 1.0f / body.mass;
 
 			body.restitution = 0.5f +(Random::GetRandomFloat() * 0.5f );
 
 			body.gravityScale = 0.0f;
 
-			body.damping = 0.5f;
+			body.damping = 0.3f;
 
 			world.AddBody(body); 
 		}

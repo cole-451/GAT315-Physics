@@ -30,6 +30,7 @@ void Contact::CreateContacts(std::vector<Physbody>& bodies, std::vector<Contact>
 					float radius = bodyA.size + bodyB.size;
 					contact.depth = radius - distance; //how far the bodies should intersect
 					contact.normal = Vector2Normalize(direction);
+					contact.restitution = (bodyA.restitution + bodyB.restitution) * 0.5f;
 
 					contacts.push_back(contact);
 			}
@@ -54,4 +55,30 @@ bool Contact::Intersects(const Physbody& bodyA, const Physbody& bodyB)
 		float radius = bodyA.size + bodyB.size;
 
 	return (distance <= (radius * radius)); //<colliding if distance is <= to radius>
+}
+
+void Contact::ResolveContacts(std::vector<Contact>& contacts)
+{
+	for (auto& contact : contacts)
+	{
+		// compute relative velocity
+		Vector2 rv = contact.bodyA->velocity - contact.bodyB->velocity;
+		// project relative velocity onto the contact normal
+		float nv = Vector2DotProduct(rv, contact.normal);
+
+		// skip if bodies are separating
+		if (nv > 0) continue;
+
+		// total inverse mass = (1/mA + 1/mB)
+		float totalInverseMass = contact.bodyA->inverseMass + contact.bodyB->inverseMass;
+		// impulse scalar = -(1 + restitution) * vn / (1/mA + 1/mB)
+		float impulseMagnitude = -(1.0f + contact.restitution) * nv / totalInverseMass;
+
+		// impulse vector along contact normal
+		Vector2 impulse = contact.normal * impulseMagnitude;
+
+			// apply equal and opposite impulses
+			contact.bodyA->AddForce(impulse, ForceMode::Impulse);
+		contact.bodyB->AddForce(impulse * -1.0f, ForceMode::Impulse);
+	}
 }

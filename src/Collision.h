@@ -14,4 +14,6 @@ struct Contact {
 	static void CreateContacts(std::vector<Physbody>& bodies, std::vector<Contact>& contacts);
 	static void SeparateContacts(std::vector<Contact>& contacts);
 	static bool Intersects(const Physbody& bodyA, const Physbody& bodyB);
+	static void ResolveContacts(std::vector<Contact>& contacts);
+
 };

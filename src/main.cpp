@@ -77,7 +77,7 @@ int main ()
 
 			body.restitution = 0.5f +(Random::GetRandomFloat() * 0.5f );
 
-			body.gravityScale = 0.0f;
+			body.gravityScale = 1.0f;
 
 			body.damping = 0.3f;
 

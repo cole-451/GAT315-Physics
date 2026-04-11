@@ -57,6 +57,7 @@ void World::UpdateCollision()
 	contacts.clear();
 	Contact::CreateContacts(bodies, contacts);
 	Contact::SeparateContacts(contacts);
+	Contact::ResolveContacts(contacts);
 
 	//barrier check: perhaps add to World
 	for (auto& body : bodies)

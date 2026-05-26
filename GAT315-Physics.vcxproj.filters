@@ -45,6 +45,21 @@
     <ClInclude Include="src\Collision.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="src\DragEffector.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AreaEffector.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\raygui.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui_physics.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world_camera.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\icon.ico">
@@ -76,6 +91,18 @@
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="src\Collision.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Effector.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DragEffector.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AreaEffector.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world_camera.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>

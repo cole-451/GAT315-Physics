@@ -4,10 +4,13 @@
 class GravitationalEffector : public Effector
 {
 public:
-    GravitationalEffector(float strength) : strength(strength) {}
+	GravitationalEffector(Vector2 position, float size, float strength) : Effector{ position, size}, strength{ strength } {
+	}
 
-    void Apply(std::vector<Physbody>& bodies) override;
+	void Apply(std::vector<Physbody>& bodies) override;
+
+	void Draw() override;
 
 private:
-    float strength = 10.0f;
+	float strength = 10.0f;
 };

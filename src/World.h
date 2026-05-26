@@ -14,7 +14,8 @@ public:
 
 	 void SemiImplicitEuler(Physbody& body, float dt);
 
-	Vector2 gravity{ 0, 9.81f };
+	 static void SetGravity(Vector2 newgravity) { gravity = newgravity; }
+	static Vector2 gravity;
 
 	 std::vector<Physbody> bodies;
 
@@ -29,6 +30,12 @@ public:
 
 	 void AddBody(Physbody& body);
 	 void AddEffector(Effector* effector);
+
+	 void SetBounds(Vector2 min, Vector2 max) { boundsMin = min; boundsMax = max; }
+
+ private:
+	 Vector2 boundsMin{ -10.0f, -5.0f };
+	 Vector2 boundsMax{ 10.0f,  5.0f };
 
 
 };

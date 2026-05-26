@@ -5,9 +5,9 @@
 #include <vector>
 
 enum class BodyType {
-	Static,
+	Dynamic,
 	Kinematic,
-	Dynamic
+	Static
 };
 
 enum class ForceMode {

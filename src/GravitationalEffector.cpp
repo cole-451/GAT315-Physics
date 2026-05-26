@@ -1,13 +1,17 @@
 #include "GravitationalEffector.h"
 
-void GravitationalEffector::Apply(std::vector<Physbody>& bodies)
+void GravitationalEffector::Apply(std::vector<Physbody>& ibodies)
 {
+    std::vector<Physbody*> bodies;
+
+    CollectBodiesInside(ibodies, bodies);
+
     for (size_t i = 0; i < bodies.size(); i++)
     {
         for (size_t j = i + 1; j < bodies.size(); j++)
         {
-            Physbody& bodyA = bodies[i];
-            Physbody& bodyB = bodies[j];
+            Physbody& bodyA = *bodies[i];
+            Physbody& bodyB = *bodies[j];
 
             // STEP 1: Direction vector
             Vector2 direction = bodyA.position - bodyB.position; //<direction vector points from bodyB to bodyA> (tail - head);
@@ -28,5 +32,11 @@ void GravitationalEffector::Apply(std::vector<Physbody>& bodies)
                 bodyA.AddForce(forceDirection * -1);
                 bodyB.AddForce(forceDirection * 1);
         }
+
     }
+}
+
+void GravitationalEffector::Draw() {
+    Effector::Draw();
+    DrawCircleV(position, size, Fade(ORANGE, 0.2f));
 }

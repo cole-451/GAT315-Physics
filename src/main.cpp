@@ -37,8 +37,8 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 
 GuiPhysicsState state;
 
-void Addbody(World& world);
-void Addeffector(World& world);
+void Addbody(World& world, WorldCamera& camera);
+void Addeffector(World& world, WorldCamera& camera);
 
 int main()
 {
@@ -99,11 +99,11 @@ int main()
 			{
 				if (IsKeyDown(KEY_LEFT_SHIFT))
 				{
-					Addeffector(world);
+					Addeffector(world, world_camera);
 				}
 				else
 				{
-					Addbody(world);
+					Addbody(world, world_camera);
 				}
 			}
 		}

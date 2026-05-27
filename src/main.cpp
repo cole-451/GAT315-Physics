@@ -31,6 +31,7 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 #include "GravitationalEffector.h"
 #include "AreaEffector.h"
 #include "DragEffector.h"
+#include "Spring.h"
 
 #include <vector>
 #include <string>
@@ -43,14 +44,10 @@ void Addeffector(World& world, WorldCamera& camera);
 int main()
 {
 	World world;
-	WorldCamera world_camera(Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f }, 5);
+	WorldCamera world_camera(Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f }, 250);
 	// set min(left - bottom) boundary(0, screen height) and max(right, top) boundary(screen width, 0)
 		world.SetBounds(world_camera.ScreenToWorld({ 0, (float)GetScreenHeight() }), world_camera.ScreenToWorld({ (float)GetScreenWidth(), 0 }));
-	/*world.AddEffector(new PointEffector(Vector2{ 300,200, }, 200.0f, -300000.0f));
-	world.AddEffector(new AreaEffector(Vector2{ 900,200, }, 200.0f, 0, 300000.0f));
-	world.AddEffector(new DragEffector(Vector2{ 300,600, }, 200.0f, 0.015f));
-
-	world.AddEffector(new GravitationalEffector(Vector2{900,600}, 200, 40000.0f));*/
+	
 
 
 	world.bodies.reserve(1000000);
@@ -62,6 +59,7 @@ int main()
 	InitWindow(1280, 800, "Hello Raylib");
 
 	state = InitGuiPhysics();
+	GuiLoadStyle("raygui/styles/cyber/style_cyber.rgs");
 
 	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
 	SearchAndSetResourceDir("resources");
@@ -70,6 +68,9 @@ int main()
 	Texture wabbit = LoadTexture("wabbit_alpha.png");
 
 	//SetTargetFPS(60);
+
+	Physbody* selectedBody = nullptr;
+	Physbody* connectedBody = nullptr;
 
 	float timeAccumulator = 0.0f;
 
@@ -106,6 +107,22 @@ int main()
 					Addbody(world, world_camera);
 				}
 			}
+
+			if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+				selectedBody = world.GetBodyIntercept(world_camera.ScreenToWorld(GetMousePosition()));
+			}
+
+			if (selectedBody) {
+				if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && IsKeyDown(KEY_LEFT_CONTROL)) {
+					Vector2 position = world_camera.ScreenToWorld(GetMousePosition());
+
+					Vector2 force = Spring::GetSpringForce(position, selectedBody->position, 1.0f, 3.0f);
+					selectedBody->AddForce(force);
+
+					DrawLineV(world_camera.WorldToScreen(position), world_camera.WorldToScreen(selectedBody->position), DARKGREEN);
+
+				}
+			}
 		}
 
 
@@ -126,17 +143,24 @@ int main()
 
 
 		// Setup the back buffer for drawing (clear color and depth buffers)
-		ClearBackground(WHITE);
+		ClearBackground(GRAY);
 
 		// draw some text using the default font
 		std::string fps_text = "FPS: ";
 		fps_text += std::to_string(GetFPS());
-		DrawText(fps_text.c_str(), 200, 200, 20, WHITE);
+		DrawText(fps_text.c_str(), GetScreenWidth() - 120, 200, 20, RED);
 
 		world_camera.Begin(); // set world camera
 		// draw our texture to the screen
+		
 		world.Draw();
+		DrawCircleLinesV(world_camera.ScreenToWorld(GetMousePosition()), state.BodySizeValue, ORANGE);
 
+		if (selectedBody) {
+			DrawCircleLinesV(selectedBody->position, selectedBody->size, YELLOW);
+
+			
+		}
 		world_camera.End(); // remove world camera
 
 

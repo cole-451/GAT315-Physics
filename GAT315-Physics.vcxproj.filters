@@ -60,6 +60,9 @@
     <ClInclude Include="src\world_camera.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="src\Spring.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\icon.ico">
@@ -103,6 +106,9 @@
       <Filter>Physics</Filter>
     </ClCompile>
     <ClCompile Include="src\world_camera.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Spring.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>

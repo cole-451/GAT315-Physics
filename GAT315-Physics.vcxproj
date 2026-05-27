@@ -313,6 +313,7 @@
     <ClInclude Include="src\PointEffector.h" />
     <ClInclude Include="src\Random.h" />
     <ClInclude Include="src\raygui.h" />
+    <ClInclude Include="src\Spring.h" />
     <ClInclude Include="src\World.h" />
     <ClInclude Include="src\world_camera.h" />
   </ItemGroup>
@@ -325,6 +326,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PhysBody.cpp" />
     <ClCompile Include="src\PointEffector.cpp" />
+    <ClCompile Include="src\Spring.cpp" />
     <ClCompile Include="src\World.cpp" />
     <ClCompile Include="src\world_camera.cpp" />
   </ItemGroup>

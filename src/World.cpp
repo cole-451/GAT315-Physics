@@ -18,7 +18,6 @@ void World::Step(float dt)
 {
 	//gravity update???
 		//reset acceleration (world) update
-	for (auto& body : bodies) body.acceleration = Vector2{ 0,0 };// Vector2{ 0,0 };
 	//for (auto& body : bodies) body.AddForce(gravity * 100.0f * body.gravityScale, ForceMode::Acceleration);// Vector2{ 0,0 };
 	for (auto& body : bodies) body.AddForce(gravity * body.gravityScale, ForceMode::Acceleration);
 
@@ -31,6 +30,8 @@ void World::Step(float dt)
 		UpdateCollision();
 
 	}
+	//reset acceleration
+	for (auto& body : bodies) body.acceleration = Vector2{ 0,0 };// Vector2{ 0,0 };
 }
 
 void World::Draw()
@@ -81,4 +82,14 @@ void World::AddBody(Physbody& body) {
 void World::AddEffector(Effector* effector)
 {
 	effectors.push_back(effector);
+}
+
+Physbody* World::GetBodyIntercept(Vector2& position)
+{
+	for (auto& body : bodies) {
+		if (CheckCollisionPointCircle(position, body.position, body.size)) {
+			return &body;
+		}
+	}
+	return nullptr;
 }

@@ -33,6 +33,8 @@ public:
 
 	 void SetBounds(Vector2 min, Vector2 max) { boundsMin = min; boundsMax = max; }
 
+	 Physbody* GetBodyIntercept(Vector2& position);
+
  private:
 	 Vector2 boundsMin{ -10.0f, -5.0f };
 	 Vector2 boundsMax{ 10.0f,  5.0f };

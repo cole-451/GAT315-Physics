@@ -15,11 +15,15 @@ public:
 	 void SemiImplicitEuler(Physbody& body, float dt);
 
 	 static void SetGravity(Vector2 newgravity) { gravity = newgravity; }
+
+	 static void SetSpringMultiplier(float multiplier) { springMultiplier = multiplier; }
 	static Vector2 gravity;
 
 	 std::vector<Physbody> bodies;
 
 	 std::vector<class Effector*> effectors;
+
+	 std::vector<class Spring*> springs;
 
 	 std::vector<Contact> contacts;
 
@@ -30,6 +34,7 @@ public:
 
 	 void AddBody(Physbody& body);
 	 void AddEffector(Effector* effector);
+	 void AddSpring(Physbody& bodyA, Physbody& bodyB, float restLength, float stiffness, float damping);
 
 	 void SetBounds(Vector2 min, Vector2 max) { boundsMin = min; boundsMax = max; }
 
@@ -38,6 +43,7 @@ public:
  private:
 	 Vector2 boundsMin{ -10.0f, -5.0f };
 	 Vector2 boundsMax{ 10.0f,  5.0f };
+	 static float springMultiplier;
 
 
 };

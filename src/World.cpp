@@ -1,6 +1,9 @@
 #include "World.h"
+#include "Spring.h"
 
 Vector2 World::gravity = { 0, 9.8f };
+
+float World::springMultiplier = 1.0f;
 
 void World::ExplicitEuler(Physbody& body, float dt) {
 	body.position += body.velocity * dt;
@@ -23,6 +26,9 @@ void World::Step(float dt)
 
 	for (auto& effector : effectors) effector->Apply(bodies);
 
+	for (auto& spring : springs) {
+		spring->Apply(springMultiplier);
+	}
 
 	// integration
 	for (auto& body : bodies) if (body.bodyType == BodyType::Dynamic) SemiImplicitEuler(body, dt); // add to world update
@@ -32,17 +38,35 @@ void World::Step(float dt)
 	}
 	//reset acceleration
 	for (auto& body : bodies) body.acceleration = Vector2{ 0,0 };// Vector2{ 0,0 };
+
+
 }
 
 void World::Draw()
 {
+	DrawLineV(Vector2{ 0, boundsMin.y }, Vector2{ 0, boundsMax.y }, WHITE);
+	for (float x = 1; x < (boundsMax.x - boundsMin.x) * 0.5f; x += 1) {
 
+	DrawLineV(Vector2{ +x, boundsMin.y }, Vector2{ +x, boundsMax.y }, WHITE);
+	DrawLineV(Vector2{ -x, boundsMin.y }, Vector2{ +x, boundsMax.y }, WHITE);
+	}
+
+	// horrizontal
+	DrawLineV(Vector2{ boundsMin.x, 0 }, Vector2{boundsMax.x, 0 }, WHITE);
+	for (float y = 1; y < (boundsMax.y - boundsMin.y) * 0.5f; y += 1) {
+
+		DrawLineV(Vector2{ boundsMin.x, +y}, Vector2{boundsMax.x, +y }, WHITE);
+		DrawLineV(Vector2{boundsMin.x, -y  }, Vector2{ boundsMax.x, +y }, WHITE);
+	}
 	for (auto& effector : effectors) {
 		effector->Draw();
 	}
 	for (auto& body : bodies) //draw in WORLD
 	{
 		body.DrawCircle(body.position, body.size, PURPLE);
+	}
+	for (auto& spring : springs) {
+		spring->Draw();
 	}
 }
 
@@ -65,11 +89,11 @@ void World::UpdateCollision()
 			body.velocity.x *= -body.restitution;
 		}
 		if (body.position.y - body.size > boundsMax.y) {
-			body.position.y = GetScreenHeight() - body.size;
+			body.position.y = boundsMax.y - body.size;
 			body.velocity.y *= -body.restitution;
 		}
 		if (body.position.y - body.size < boundsMin.y) {
-			body.position.y = body.size;
+			body.position.y = boundsMin.y + body.size;
 			body.velocity.y *= body.restitution;
 		}
 	}
@@ -82,6 +106,12 @@ void World::AddBody(Physbody& body) {
 void World::AddEffector(Effector* effector)
 {
 	effectors.push_back(effector);
+}
+
+void World::AddSpring(Physbody& bodyA, Physbody& bodyB, float restLength, float stiffness, float damping)
+{
+	Spring* spring = new Spring(&bodyA, &bodyB, restLength, stiffness, damping);
+	springs.push_back(spring);
 }
 
 Physbody* World::GetBodyIntercept(Vector2& position)

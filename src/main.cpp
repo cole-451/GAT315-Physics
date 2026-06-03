@@ -44,9 +44,6 @@ void Addeffector(World& world, WorldCamera& camera);
 int main()
 {
 	World world;
-	WorldCamera world_camera(Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f }, 250);
-	// set min(left - bottom) boundary(0, screen height) and max(right, top) boundary(screen width, 0)
-		world.SetBounds(world_camera.ScreenToWorld({ 0, (float)GetScreenHeight() }), world_camera.ScreenToWorld({ (float)GetScreenWidth(), 0 }));
 	
 
 
@@ -58,6 +55,9 @@ int main()
 	// Create the window and OpenGL context
 	InitWindow(1280, 800, "Hello Raylib");
 
+	WorldCamera world_camera(Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f }, 500);
+	// set min(left - bottom) boundary(0, screen height) and max(right, top) boundary(screen width, 0)
+		world.SetBounds(world_camera.ScreenToWorld({ 0, (float)GetScreenHeight() }), world_camera.ScreenToWorld({ (float)GetScreenWidth(), 0 }));
 	state = InitGuiPhysics();
 	GuiLoadStyle("raygui/styles/cyber/style_cyber.rgs");
 
@@ -91,6 +91,7 @@ int main()
 		if (IsKeyPressed(KEY_TAB)) state.PhysicsPanelActive = !state.PhysicsPanelActive;
 
 		World::SetGravity(Vector2{ 0.0f, state.GravityValue });
+		World::SetSpringMultiplier(state.SpringMultiplierValue);
 
 		// if mouse over gui,
 		if (!MouseOverGui) {
@@ -104,7 +105,7 @@ int main()
 				}
 				else
 				{
-					Addbody(world, world_camera);
+					Addbody(world, world_camera); 
 				}
 			}
 
@@ -113,7 +114,8 @@ int main()
 			}
 
 			if (selectedBody) {
-				if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && IsKeyDown(KEY_LEFT_CONTROL)) {
+				if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+					if (IsKeyDown(KEY_LEFT_CONTROL)) {
 					Vector2 position = world_camera.ScreenToWorld(GetMousePosition());
 
 					Vector2 force = Spring::GetSpringForce(position, selectedBody->position, 1.0f, 3.0f);
@@ -121,6 +123,23 @@ int main()
 
 					DrawLineV(world_camera.WorldToScreen(position), world_camera.WorldToScreen(selectedBody->position), DARKGREEN);
 
+					}
+					else {
+						connectedBody = world.GetBodyIntercept(world_camera.ScreenToWorld(GetMousePosition()));
+
+					}
+
+				}
+				else {
+					if (selectedBody && connectedBody) {
+						//connect both bodies
+						float distance = (state.SpringAutoLengthChecked) ? Vector2Distance(selectedBody->position, connectedBody->position) : state.SpringLengthValue;
+						world.AddSpring(*selectedBody, *connectedBody, state.SpringLengthValue, state.SpringStiffnessValue, state.SpringDampingValue);
+
+					}
+
+					selectedBody = nullptr;
+					connectedBody = nullptr;
 				}
 			}
 		}
@@ -154,7 +173,7 @@ int main()
 		// draw our texture to the screen
 		
 		world.Draw();
-		DrawCircleLinesV(world_camera.ScreenToWorld(GetMousePosition()), state.BodySizeValue, ORANGE);
+		DrawCircleLinesV(world_camera.ScreenToWorld(GetMousePosition()), state.BodySizeValue * 0.5, ORANGE);
 
 		if (selectedBody) {
 			DrawCircleLinesV(selectedBody->position, selectedBody->size, YELLOW);
@@ -203,6 +222,8 @@ void Addbody(World& world, WorldCamera& camera) {
 	body.gravityScale = state.BodyGravityValue;
 
 	body.damping = state.BodyDampingValue;
+
+	body.color = ColorFromHSV(120.0f, 1.0f, 1.0f);
 
 	world.AddBody(body);
 }

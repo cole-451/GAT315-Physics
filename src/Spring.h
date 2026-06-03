@@ -10,16 +10,19 @@ public:
 
 	float stiffness;
 
+	float damping;
+
 public:
 
 	Spring() = default;
 
 	// if it can be null, pass in pointers instead of references
-	Spring(Physbody* bodyA, Physbody* bodyB, float restLength, float stiffness = 1):
-		bodyA{bodyA},
-		bodyB{bodyB},
-		restLength{restLength},
-		stiffness{stiffness}
+	Spring(Physbody* bodyA, Physbody* bodyB, float restLength, float stiffness = 1, float damping = 1) :
+		bodyA{ bodyA },
+		bodyB{ bodyB },
+		restLength{ restLength },
+		stiffness{ stiffness },
+		damping{ damping }
 		{}
 
 	void Apply(float multiplier = 1);
